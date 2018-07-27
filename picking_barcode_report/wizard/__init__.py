@@ -19,6 +19,6 @@
 #
 ##############################################################################
 
-import picking_barcode_labels
+from . import picking_barcode_labels
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
