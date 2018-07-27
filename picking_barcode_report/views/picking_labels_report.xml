@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_picking_barcode_labels">
+            <t t-foreach="doc_ids" t-as="doc">
+                <div class="page" align="center">
+                    <t t-set="product" t-value="request.env['product.product'].browse(doc.get('product_id'))"/>
+
+                    <!-- Company Logo -->
+                    <div align="left">
+                        <img t-if="product.company_id.logo" t-att-src="'data:image/png;base64,%s' % product.company_id.logo" style="max-height: 45px;"/>
+                    </div>
+
+                    <!-- Product PART No -->
+                    <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;">
+                        <span><b>PART  NO</b></span>
+                    </div>
+                    <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
+                        <span t-field="product.default_code" />
+                    </div>
+
+                    <!-- Product SERIAL No -->
+                    <div t-if="data['form']['lot']" align="center" style="color:black;font-size:15px;">
+                        <span><b>SERIAL  NO</b></span>
+                    </div>
+                    <div t-if="data['form']['lot']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
+                        <span t-esc="doc.get('lot_number')"/>
+                    </div>
+
+                    <!-- Product Barcode -->
+                    <div t-if="data['form']['barcode']"
+                        style="color:black;margin-top:15px;font-size:9px;">
+                        <span t-raw="get_barcode_string(product[0], data)" />
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>
