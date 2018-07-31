@@ -52,7 +52,7 @@
                         <div class="page" align="center">
                             <!-- Company Logo -->
                             <div align="left">
-                                <img t-if="product[0].company_id.logo" t-att-src="'data:image/png;base64,%s' % product[0].company_id.logo" style="max-height: 45px;"/>
+                                <img t-if="product[0].company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(product[0].company_id.logo)" style="max-height: 45px;"/>
                             </div>
                             <!-- Product PART No -->
                             <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;">
