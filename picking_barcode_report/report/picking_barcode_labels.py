@@ -8,20 +8,18 @@ from base64 import b64encode
 class ReportPickingBarcodeLabels(models.AbstractModel):
     _name = 'report.picking_barcode_report.report_picking_barcode_labels'
 
-    @api.multi
-    def render_html(self, docids, data=None):
-        report_obj = self.env['report']
-        report = report_obj._get_report_from_name(
-              'picking_barcode_report.report_picking_barcode_labels')
-        docargs = {
-            'doc_ids': data['form']['product_ids'],
-            'doc_model': report.model,
+    @api.model
+    def get_report_values(self, docids, data=None):
+        picking_barcode_report = self.env['ir.actions.report']._get_report_from_name('picking_barcode_report.report_picking_barcode_labels')
+        docids = data['context']['active_ids']
+        picking_barcodes = self.env['stock.picking'].browse(docids)
+        return {
+            'doc_ids':  data['form']['product_ids'],
+            'doc_model': picking_barcode_report.model,
             'docs': docids,
+            'data': data,
             'get_barcode_string': self._get_barcode_string,
-            'data': data
-            }
-        return report_obj.render(
-             'picking_barcode_report.report_picking_barcode_labels', docargs)
+        }
 
     @api.model
     def _get_barcode_string(self, product, data):

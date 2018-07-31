@@ -33,8 +33,8 @@ class PickingBarcodeLabels(models.TransientModel):
             picking_ids = self.env['stock.picking'].browse(record_ids)
             product_get_ids = []
             pickiing_qty = 0
-            for pack_operation in picking_ids.mapped('pack_operation_product_ids'):
-                for pack in pack_operation.pack_lot_ids:
+            for pack_operation in picking_ids.mapped('move_lines'):
+                for pack in pack_operation.move_line_ids:
                     product_get_ids.append((0, 0, {
                         'product_id': pack_operation.product_id.id,
                         'lot_number': pack.lot_id.name,
@@ -68,7 +68,7 @@ class PickingBarcodeLabels(models.TransientModel):
 
     @api.model
     def _create_paperformat(self, data):
-        report_action_id = self.env['ir.actions.report.xml'].search([('report_name', '=', 'picking_barcode_report.report_picking_barcode_labels')])
+        report_action_id = self.env['ir.actions.report'].search([('report_name', '=', 'picking_barcode_report.report_picking_barcode_labels')])
         if not report_action_id:
             raise Warning('Someone has deleted the reference view of report, Please Update the module!')
         config_rec = self.env['barcode.configuration'].search([], limit=1)
@@ -108,6 +108,8 @@ class PickingBarcodeLabels(models.TransientModel):
 
     @api.multi
     def print_picking_barcode(self):
+        self.ensure_one()
+        [data] = self.read()
         if not self.env.user.has_group('dynamic_barcode_labels.group_barcode_labels'):
             raise Warning(_("You have not enough rights to access this "
                             "document.\n Please contact administrator to access "
@@ -118,9 +120,10 @@ class PickingBarcodeLabels(models.TransientModel):
         if not config_rec:
             raise Warning(_(" Please configure barcode data from "
                             "configuration menu"))
-        datas = {
-            'ids': [x.product_id.id for x in self.product_get_ids],
-            'form': {
+        data['report_name']= 'Picking Product Labels'
+        active_ids = self.env.context.get('active_ids', [])
+        stock_pickings = self.env['stock.picking'].browse(active_ids)
+        data.update({
                 'label_width': config_rec.label_width or 50,
                 'label_height': config_rec.label_height or 50,
                 'margin_top': config_rec.margin_top or 1,
@@ -150,8 +153,7 @@ class PickingBarcodeLabels(models.TransientModel):
                     'lot_number': line.lot_number or '',
                     'qty': line.qty,
                     } for line in self.product_get_ids]
-            }
-        }
+                     })
         browse_pro = self.env['product.product'].browse([x.product_id.id for x in self.product_get_ids])
         for product in browse_pro:
             barcode_value = product[config_rec.barcode_field]
@@ -168,7 +170,10 @@ class PickingBarcodeLabels(models.TransientModel):
                 )
             except:
                 raise Warning('Select valid barcode type according barcode field value or check value in field!')
-        self._create_paperformat(datas['form'])
-        return self.env['report'].get_action([], 'picking_barcode_report.report_picking_barcode_labels', data=datas)
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+        self._create_paperformat(data)
+        datas = {
+            'ids': [1],
+            'model': 'stock.picking',
+            'form': data
+        }
+        return self.env.ref('picking_barcode_report.pickingbarcodelabels').report_action(stock_pickings, data=datas)

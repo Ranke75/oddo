@@ -9,11 +9,11 @@ from base64 import b64encode
 class ReportBarcodeLabels(models.AbstractModel):
     _name = 'report.dynamic_barcode_labels.report_barcode_labels'
 
-    @api.multi
-    def render_html(self, docids, data=None):
-        report_obj = self.env['report']
-        report = report_obj._get_report_from_name(
-              'dynamic_barcode_labels.report_barcode_labels')
+    @api.model
+    def get_report_values(self, docids, data=None):
+        dynamic_barcode_report = self.env['ir.actions.report'].\
+                        _get_report_from_name('dynamic_barcode_labels.report_barcode_labels')
+        docids = data['context']['active_ids']
         browse_record_list = []
         product_obj = self.env["product.product"]
         for rec in data['form']['product_ids']:
@@ -22,15 +22,13 @@ class ReportBarcodeLabels(models.AbstractModel):
                        product_obj.browse(int(rec['product_id'])),
                        rec['lot_number']
                        ))
-        docargs = {
-            'doc_ids': browse_record_list,
-            'doc_model': report.model,
+        return {
+            'doc_ids':  browse_record_list,
+            'doc_model': dynamic_barcode_report.model,
             'docs': docids,
+            'data': data,
             'get_barcode_string': self._get_barcode_string,
-            'data': data
-            }
-        return report_obj.render(
-             'dynamic_barcode_labels.report_barcode_labels', docargs)
+        }
 
     @api.model
     def _get_barcode_string(self, product, data):
