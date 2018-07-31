@@ -33,7 +33,7 @@ class ReportPickingBarcodeLabels(models.AbstractModel):
             humanReadable=data['form']['humanreadable']
         )
         encoded_string = b64encode(barcode_str.asString('png'))
-        barcode_str = "<img style='width:" + str(data['form']['display_width']) + "px;height:" + str(data['form']['display_height']) + "px'src='data:image/png;base64,{0}'>".format(str(encoded_string))
+        barcode_str = "<img style='width:" + str(data['form']['display_width']) + "px;height:" + str(data['form']['display_height']) + "px' src='data:image/png;base64, '" + str(encoded_string) + "'>"
         return barcode_str or ''
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
