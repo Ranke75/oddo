@@ -24,7 +24,7 @@
                         <!-- Company Logo -->
                         <t t-set="company_id" t-value="request.env['res.company'].browse(data['form']['company_id'])"/>
                         <div t-if="data['form']['company_id']" align="left">
-                            <img t-if="company_id.logo" t-att-src="'data:image/png;base64,%s' % company_id.logo" style="max-height: 45px;"/>
+                            <img t-if="company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(company_id.logo)" style="max-height: 45px;"/>
                         </div>
                         <!-- Product PART No -->
                         <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;">
