@@ -16,9 +16,6 @@
                             </tree>
                         </field>
                     </group>
-                    <group>
-                        <field name="barcode_type"/>
-                    </group>
                     <label string="More information about barcode configuration data, please navigate to inventory > barcode labels > barcode config menu." colspan="4"/>
                     <footer>
                         <button name="print_picking_barcode" string="Print" type="object" class="oe_highlight" />

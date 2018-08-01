@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Barcode Configuration" class="oe_form_configuration">
                     <header>
-                        <button string="_Apply" type="object" name="apply" class="oe_highlight"/>
+                        <button string="Apply" type="object" name="apply" class="oe_highlight"/>
                     </header>
                     <sheet>
                     <group>
@@ -25,16 +25,17 @@
                         <page string="Attributes To Print">
                             <group string="Display Attributes Into Labels">
                                 <group>
-                                    <field name="product_name" invisible="1"/>
+                                    <field name="product_name" />
                                     <field name="product_code" />
                                     <field name="barcode" />
                                 </group>
                                 <group>
-                                    <field name="lot" string="Lot/Serial"/>
-                                    <field name="product_variant" invisible="1"/>
-                                    <field name="price_display"  invisible="1"/>
+                                    <field name="lot"/>
+                                    <field name="product_variant" />
+                                    <field name="price_display" />
                                 </group>
                                 <group string="Barcode" attrs="{'invisible': [('barcode', '=', False)]}">
+                                    <field name="barcode_type" attrs="{'required': [('barcode', '=', True)]}" />
                                     <field name="barcode_field" attrs="{'required': [('barcode', '=', True)]}" />
                                     <field name="humanreadable" />
                                     <field name="display_width" string="Barcode Width"/>

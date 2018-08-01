@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 from odoo import models, api, _
 from reportlab.graphics import barcode
 from base64 import b64encode
@@ -10,30 +11,29 @@ class ReportPickingBarcodeLabels(models.AbstractModel):
 
     @api.model
     def get_report_values(self, docids, data=None):
+        if not data.get('form'):
+            raise UserError(_("Form content is missing, this report cannot be printed."))
+
         picking_barcode_report = self.env['ir.actions.report']._get_report_from_name('picking_barcode_report.report_picking_barcode_labels')
         docids = data['context']['active_ids']
         picking_barcodes = self.env['stock.picking'].browse(docids)
+
         return {
             'doc_ids':  data['form']['product_ids'],
             'doc_model': picking_barcode_report.model,
             'docs': docids,
             'data': data,
-            'get_barcode_string': self._get_barcode_string,
+            'get_barcode_value': self.get_barcode_value,
+            'is_humanreadable': self.is_humanreadable,
+            'time': time,
         }
 
-    @api.model
-    def _get_barcode_string(self, product, data):
+    def is_humanreadable(self, data):
+        return data['form']['humanreadable'] and 1 or 0
+
+    def get_barcode_value(self, product, data):
         barcode_value = product[str(data['form']['barcode_field'])]
-        barcode_str = barcode.createBarcodeDrawing(
-            data['form']['barcode_type'],
-            value=barcode_value,
-            format='png',
-            width=int(data['form']['barcode_height']),
-            height=int(data['form']['barcode_width']),
-            humanReadable=data['form']['humanreadable']
-        )
-        encoded_string = b64encode(barcode_str).replace(b"\n", b"").decode('ascii')
-        barcode_str = "<img style='width:" + str(data['form']['display_width']) + "px;height:" + str(data['form']['display_height']) + "px' src='data:image/png;base64,'" + str(encoded_string) + "'>"
-        return barcode_str or ''
+        return barcode_value
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

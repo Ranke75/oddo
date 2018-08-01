@@ -10,16 +10,17 @@
             <field name="margin_right" eval="1" />
             <field name="dpi" eval="90" />
             <field name="header_spacing" eval="1" />
-            <field name="barcode_height" eval="300" />
-            <field name="barcode_width" eval="1400" />
-            <field name="display_height" eval="90" />
-            <field name="display_width" eval="230" />
+            <field name="display_width" eval="350" />
+            <field name="display_height" eval="100" />
+            <field name="barcode_type">EAN13</field>
             <field name="currency_position">before</field>
             <field name="humanreadable" eval="True" />
             <field name="product_name" eval="True" />
             <field name="lot" eval="False" />
             <field name="barcode" eval="True" />
             <field name="barcode_field">barcode</field>
+            <field name="barcode_height" eval="300" />
+            <field name="barcode_width" eval="1400" />
         </record>
     </data>
 </odoo>

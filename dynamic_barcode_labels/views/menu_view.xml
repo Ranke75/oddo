@@ -2,9 +2,24 @@
 <openerp>
     <data>
 
+        <act_window id="act_template_bar_labels" name="Barcode Product Labels"
+            key2="client_print_multi" res_model="barcode.labels"
+            src_model="product.template" view_mode="form" target="new"
+            view_type="form" />
+
         <act_window id="act_barcode_labels" name="Barcode Product Labels"
             key2="client_print_multi" res_model="barcode.labels"
             src_model="product.product" view_mode="form" target="new"
+            view_type="form" />
+
+        <act_window id="act_purchase_bar_labels" name="Barcode Product Labels"
+            key2="client_print_multi" res_model="barcode.labels"
+            src_model="purchase.order" view_mode="form" target="new"
+            view_type="form" />
+
+        <act_window id="act_picking_bar_labels" name="Barcode Product Labels"
+            key2="client_print_multi" res_model="barcode.labels"
+            src_model="stock.picking" view_mode="form" target="new"
             view_type="form" />
 
         <menuitem id="menu_main_barcode_labels" name="Barcode Labels"

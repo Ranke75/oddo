@@ -48,6 +48,14 @@ class BarcodeConfiguration(models.Model):
          help="Determines where the currency symbol"
          " should be placed after or before the amount.",
          default='before')
+    barcode_type = fields.Selection([
+         ('Codabar', 'Codabar'), ('Code11', 'Code11'),
+         ('Code128', 'Code128'), ('EAN13', 'EAN13'),
+         ('Extended39', 'Extended39'), ('EAN8', 'EAN8'),
+         ('Extended93', 'Extended93'), ('USPS_4State', 'USPS_4State'),
+         ('I2of5', 'I2of5'), ('UPCA', 'UPCA'),
+         ('QR', 'QR')],
+            string='Type', required=True)
     barcode_height = fields.Integer(string="Height",  help="Height of barcode.")
     barcode_width = fields.Integer(string="Width",  help="Width of barcode.")
     barcode_field = fields.Selection('_get_barcode_field', string="Barcode Field")
