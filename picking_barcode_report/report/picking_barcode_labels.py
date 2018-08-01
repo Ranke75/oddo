@@ -32,7 +32,7 @@ class ReportPickingBarcodeLabels(models.AbstractModel):
             height=int(data['form']['barcode_width']),
             humanReadable=data['form']['humanreadable']
         )
-        encoded_string = b64encode(barcode_str)
+        encoded_string = b64encode(barcode_str).replace(b"\n", b"").decode('ascii')
         barcode_str = "<img style='width:" + str(data['form']['display_width']) + "px;height:" + str(data['form']['display_height']) + "px' src='data:image/png;base64,'" + str(encoded_string) + "'>"
         return barcode_str or ''
 
