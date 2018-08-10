@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_barcode_labels">
+            <t t-foreach="doc_ids" t-as="product">
+                <div class="page" align="center">
+                    <!-- Product Name -->
+                    <div t-if="data['form']['product_name']" align="center"
+                        style="color:black;font-size:15px;">
+                        <span t-field="product[0].name" />
+                    </div>
+
+                    <!-- Product Attributes -->
+                    <div t-if="data['form']['product_variant']"
+                        align="center" style="color:black;font-size:10px;">
+                        <span
+                            t-esc="', '.join(map(lambda x: x.name, product[0].attribute_value_ids))" />
+                    </div>
+
+                    <!-- Product Lot -->
+                    <div t-if="data['form']['lot']" align="center"
+                        style="color:black;font-size:10px;">
+                        <span t-raw="product[1]" />
+                    </div>
+
+                    <!-- Product Default Code -->
+                    <div t-if="data['form']['product_code']" align="center"
+                        style="color:black;font-size:10px;">
+                        <span t-field="product[0].default_code" />
+                    </div>
+
+                    <!-- Barcode -->
+                    <div t-if="data['form']['barcode']"
+                        style="color:black;margin-top:15px;font-size:9px;">
+                        <span t-raw="get_barcode_string(product[0], data)" />
+                    </div>
+
+                    <!-- Price -->
+                    <div t-if="data['form']['price_display']" style="color:black;font-size:15px;">
+                        <t
+                            t-if="data['form']['currency_position'] == 'before'">
+                            <t t-if="data['form'].get('symbol')">
+                                <span t-esc="data['form']['symbol']" />
+                            </t>
+                        </t>
+                        <span t-field="product[0].lst_price" />
+                        <t
+                            t-if="data['form']['currency_position'] == 'after'">
+                            <t t-if="data['form'].get('symbol')">
+                                <span t-esc="data['form']['symbol']" />
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>
