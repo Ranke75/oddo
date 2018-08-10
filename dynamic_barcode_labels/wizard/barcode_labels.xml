@@ -13,17 +13,21 @@
                         <field name="product_get_ids" nolabel="1">
                             <tree string="Product" editable="bottom">
                                 <field name="product_id" options='{"no_open": True,"no_create": 1, "no_create_edit": 1}'/>
-                                <field name="lot_id" domain="[('product_id','=',product_id)]"/>
+                                <field name="lot_id" invisible="1"/>
                                 <field name="qty" />
                             </tree>
                         </field>
                     </group>
+                    <group>
+                        <field name="barcode_type"/>
+                    </group>
                     <label string="More information about barcode configuration data, please navigate to inventory > barcode labels > barcode config menu." colspan="4"/>
                     <footer>
                         <button name="print_report" string="Print"
-                            default_focus="1" type="object" class="oe_highlight" />
+                            type="object" class="oe_highlight" />
                         or
-                        <button string="Cancel" class="btn btn-default" special="cancel" />
+                        <button string="Cancel" class="oe_link"
+                            special="cancel" />
                     </footer>
                 </form>
             </field>

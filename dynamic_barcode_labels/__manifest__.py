@@ -2,14 +2,13 @@
 # Copyright (c) 2015-Present TidyWay Software Solution. (<https://tidyway.in/>)
 
 {
-    'name': 'Print Dynamic Barcode Labels (Product/Template/Purchase/Picking)',
-    "version": "2.0",
+    'name': 'Print Dynamic Barcode Labels',
+    "version": "1.0",
     'author': 'TidyWay',
     'category': 'product',
     'website': 'http://www.tidyway.in',
-    'summary': 'Print Labels from Product / Product Templates / Quotation / Purchase / Picking',
     'description': '''Print Dynamic Barcode Labels''',
-    'depends': ['stock', 'web', 'purchase'],
+    'depends': ['stock'],
     'data': [
              'data/barcode_config.xml',
              'security/barcode_label_security.xml',
@@ -22,8 +21,8 @@
              ],
     'price': 99,
     'currency': 'EUR',
-    'installable': True,
     'license': 'OPL-1',
+    'installable': True,
     'application': True,
     'auto_install': False,
     'images': ['images/label.jpg'],

@@ -1,48 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    <template id="report_picking_barcode_labels">
-        <t t-call="web.html_container">
+<openerp>
+    <data>
+        <template id="report_picking_barcode_labels">
             <t t-foreach="doc_ids" t-as="doc">
-                <t t-call="web.basic_layout">
-                    <div class="page" align="center">
-                        <t t-set="product" t-value="request.env['product.product'].browse(doc.get('product_id'))"/>
-                        <!-- Company Logo -->
-                        <t t-set="company_id" t-value="request.env['res.company'].browse(data['form']['company_id'])"/>
-                        <div t-if="data['form']['company_id']" align="left">
-                            <img t-if="company_id.logo" t-att-src="'data:image/png;base64,%s' % to_text(company_id.logo)" style="max-height: 45px;"/>
-                        </div>
-                        <!-- Product PART No -->
-                        <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;">
-                            <span><b>PART  NO</b></span>
-                        </div>
-                        <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
-                            <span t-field="product.default_code" />
-                        </div>
-                        <!-- Product SERIAL No -->
-                        <span t-if="data['form']['lot']" >
-                            <span t-if="doc.get('lot_number')">
-                                 <div align="center" style="color:black;font-size:15px;">
-                                    <span><b>SERIAL  NO</b></span>
-                                </div>
-                            </span>
-                        </span>
-                        <span t-if="data['form']['lot']" >
-                            <span t-if="doc.get('lot_number')">
-                                 <div align="center" style="color:black;font-size:15px;border: 2px solid black;">
-                                    <span t-esc="doc.get('lot_number')"/>
-                                </div>
-                            </span>
-                        </span>
-                        <!-- Product Barcode -->
-                        <div t-if="data['form']['barcode']"
-                            style="color:black;margin-top:15px;font-size:9px;">
-                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=%s' %(data['form']['barcode_type'], get_barcode_value(product[0], data), int(data['form']['display_width']), int(data['form']['display_height']), is_humanreadable(data))"/>
-                        </div>
-                    </div>
-                </t>
-            </t>
-        </t>
-    </template>
+                <div class="page" align="center">
+                    <t t-set="product" t-value="request.env['product.product'].browse(doc.get('product_id'))"/>
 
-</odoo>
+                    <!-- Company Logo -->
+                    <div align="left">
+                        <img t-if="product.company_id.logo" t-att-src="'data:image/png;base64,%s' % product.company_id.logo" style="max-height: 45px;"/>
+                    </div>
+
+                    <!-- Product PART No -->
+                    <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;">
+                        <span><b>PART  NO</b></span>
+                    </div>
+                    <div t-if="data['form']['product_code']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
+                        <span t-field="product.default_code" />
+                    </div>
+
+                    <!-- Product SERIAL No -->
+                    <div t-if="data['form']['lot']" align="center" style="color:black;font-size:15px;">
+                        <span><b>SERIAL  NO</b></span>
+                    </div>
+                    <div t-if="data['form']['lot']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
+                        <span t-esc="doc.get('lot_number')"/>
+                    </div>
+
+                    <!-- Product Barcode -->
+                    <div t-if="data['form']['barcode']"
+                        style="color:black;margin-top:15px;font-size:9px;">
+                        <span t-raw="get_barcode_string(product[0], data)" />
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>

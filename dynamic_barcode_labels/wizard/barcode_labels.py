@@ -61,40 +61,9 @@ class BarcodeLabels(models.TransientModel):
             record_ids = self._context.get('active_ids', []) or []
             products = self.env['product.product'].browse(record_ids)
             product_get_ids = [(0, 0, {
-                                     'product_id': product.id,
-                                     'qty': 1.0
-                                     }) for product in products]
-        elif self._context.get('active_model') == 'product.template':
-            record_ids = self._context.get('active_ids', []) or []
-            templates = self.env['product.template'].browse(record_ids)
-            product_get_ids = []
-            for template in templates:
-                product_get_ids += [(0, 0, {
-                             'product_id': product.id,
-                             'qty': 1.0
-                             }) for product in template.product_variant_ids]
-        elif self._context.get('active_model') == 'purchase.order':
-            record_ids = self._context.get('active_ids', []) or []
-            purchase_recs = self.env['purchase.order'].browse(record_ids)
-            product_get_ids = []
-            for purchase in purchase_recs:
-                for line in purchase.order_line:
-                    if line.product_id and line.product_id.type != 'service':
-                        product_get_ids += [(0, 0, {
-                                 'product_id': line.product_id.id,
-                                 'qty': int(abs(line.product_qty)) or 1.0
-                                 })]
-        elif self._context.get('active_model') == 'stock.picking':
-            record_ids = self._context.get('active_ids', []) or []
-            picking_recs = self.env['stock.picking'].browse(record_ids)
-            product_get_ids = []
-            for picking in picking_recs:
-                for line in picking.move_lines:
-                    if line.product_id and line.product_id.type != 'service':
-                        product_get_ids += [(0, 0, {
-                                 'product_id': line.product_id.id,
-                                 'qty': int(abs(line.product_qty)) or 1.0
-                                 })]
+                'product_id': product.id,
+                'qty': 1.0
+            }) for product in products]
         view_id = self.env['ir.ui.view'].search([('name', '=', 'report_barcode_labels')])
         if not view_id.arch:
             raise Warning('Someone has deleted the reference '
@@ -108,10 +77,18 @@ class BarcodeLabels(models.TransientModel):
           'wizard_id',
           string='Products'
           )
+    barcode_type = fields.Selection([
+         ('Codabar', 'Codabar'), ('Code11', 'Code11'),
+         ('Code128', 'Code128'), ('EAN13', 'EAN13'),
+         ('Extended39', 'Extended39'), ('EAN8', 'EAN8'),
+         ('Extended93', 'Extended93'), ('USPS_4State', 'USPS_4State'),
+         ('I2of5', 'I2of5'), ('UPCA', 'UPCA'),
+         ('QR', 'QR')],
+            string='Barcode Type', required=True)
 
     @api.model
     def _create_paper_format(self, data):
-        report_action_id = self.env['ir.actions.report'].search([('report_name', '=', 'dynamic_barcode_labels.report_barcode_labels')])
+        report_action_id = self.env['ir.actions.report.xml'].search([('report_name', '=', 'dynamic_barcode_labels.report_barcode_labels')])
         if not report_action_id:
             raise Warning('Someone has deleted the reference view of report, Please Update the module!')
         config_rec = self.env['barcode.configuration'].search([], limit=1)
@@ -141,10 +118,10 @@ class BarcodeLabels(models.TransientModel):
                 'margin_right': margin_right,
                 'header_spacing': header_spacing,
                 'orientation': orientation,
-                #'display_height': config_rec.display_height,
-                #'display_width': config_rec.display_width,
-                #'humanreadable': config_rec.humanreadable,
-                #'lot': config_rec.lot
+                'display_height': config_rec.display_height,
+                'display_width': config_rec.display_width,
+                'humanreadable': config_rec.humanreadable,
+                'lot': config_rec.lot
                 })
         report_action_id.write({'paperformat_id': paperformat_id.id})
         return True
@@ -163,7 +140,6 @@ class BarcodeLabels(models.TransientModel):
                             "configuration menu"))
         datas = {
                  'ids': [x.product_id.id for x in self.product_get_ids],
-                 'model': 'product.product',
                  'form': {
                     'label_width': config_rec.label_width or 50,
                     'label_height': config_rec.label_height or 50,
@@ -175,7 +151,7 @@ class BarcodeLabels(models.TransientModel):
                     'header_spacing': config_rec.header_spacing or 1,
                     'barcode_height': config_rec.barcode_height or 300,
                     'barcode_width': config_rec.barcode_width or 1500,
-                    'barcode_type': config_rec.barcode_type or 'EAN13',
+                    'barcode_type': self.barcode_type or 'EAN13',
                     'barcode_field': config_rec.barcode_field or '',
                     'display_width': config_rec.display_width,
                     'display_height': config_rec.display_height,
@@ -189,7 +165,6 @@ class BarcodeLabels(models.TransientModel):
                     'currency_position': config_rec.currency_position or 'after',
                     'currency': config_rec.currency and config_rec.currency.id or '',
                     'symbol': config_rec.currency and config_rec.currency.symbol or '',
-                    'company_id': self.env.user.company_id.id,
                     'product_ids': [{
                          'product_id': line.product_id.id,
                          'lot_id': line.lot_id and line.lot_id.id or False,
@@ -205,7 +180,7 @@ class BarcodeLabels(models.TransientModel):
                 raise Warning(_('Please define barcode for %s!' % (product['name'])))
             try:
                 barcode.createBarcodeDrawing(
-                            config_rec.barcode_type,
+                            self.barcode_type,
                             value=barcode_value,
                             format='png',
                             width=int(config_rec.barcode_height),
@@ -215,7 +190,7 @@ class BarcodeLabels(models.TransientModel):
             except:
                 raise Warning('Select valid barcode type according barcode field value or check value in field!')
 
-        self.sudo()._create_paper_format(datas['form'])
-        return self.env.ref('dynamic_barcode_labels.barcodelabels').report_action([], data=datas)
+        self._create_paper_format(datas['form'])
+        return self.env['report'].get_action([], 'dynamic_barcode_labels.report_barcode_labels', data=datas)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
