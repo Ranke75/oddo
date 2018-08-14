@@ -19,6 +19,22 @@
                         <span t-field="product.default_code" />
                     </div>
 
+                    <!-- Product Description -->
+                    <div t-if="data['form']['description']" align="center" style="color:black;font-size:15px;">
+                        <span><b>Description</b></span>
+                    </div>
+                    <div t-if="data['form']['description']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
+                        <span t-esc="product.product_tmpl_id.description_sale"/>
+                    </div>
+
+                    <!-- Product Quantity -->
+                    <div t-if="data['form']['quantity']" align="center" style="color:black;font-size:15px;">
+                        <span><b>Quantity</b></span>
+                    </div>
+                    <div t-if="data['form']['quantity']" align="center" style="color:black;font-size:15px;border: 2px solid black;">
+                        <span t-esc="doc.get('qty')"/>
+                    </div>
+
                     <!-- Product SERIAL No -->
                     <div t-if="data['form']['lot']" align="center" style="color:black;font-size:15px;">
                         <span><b>SERIAL  NO</b></span>

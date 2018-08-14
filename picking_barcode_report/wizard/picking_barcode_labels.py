@@ -50,7 +50,6 @@ class PickingBarcodeLabels(models.TransientModel):
             if not view_id.arch:
                 raise Warning('Someone has deleted the reference '
                     'view of report, Please Update the module!')
-            print "\n\n product_get_ids >>>>>>>>>", product_get_ids
             return {
                 'product_get_ids': product_get_ids
             }
@@ -104,7 +103,6 @@ class PickingBarcodeLabels(models.TransientModel):
             'humanreadable': config_rec.humanreadable,
             'lot': config_rec.lot
             })
-        print "\n\n _create_paperformat >>>>>>>>>", paperformat_id
         report_action_id.write({'paperformat_id': paperformat_id.id})
         return True
 
@@ -142,6 +140,8 @@ class PickingBarcodeLabels(models.TransientModel):
                 'product_variant': config_rec.product_variant,
                 'price_display': config_rec.price_display,
                 'lot': config_rec.lot,
+                'description': config_rec.description,
+                'quantity': config_rec.quantity,
                 'product_code': config_rec.product_code or '',
                 'barcode': config_rec.barcode,
                 'currency_position': config_rec.currency_position or 'after',
@@ -171,7 +171,6 @@ class PickingBarcodeLabels(models.TransientModel):
             except:
                 raise Warning('Select valid barcode type according barcode field value or check value in field!')
         self._create_paperformat(datas['form'])
-        print "\n\n Final >>>>>>>>>>>>>", self.env['report'].get_action([], 'picking_barcode_report.report_picking_barcode_labels', data=datas)
         return self.env['report'].get_action([], 'picking_barcode_report.report_picking_barcode_labels', data=datas)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

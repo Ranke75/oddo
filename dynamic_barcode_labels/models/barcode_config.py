@@ -65,6 +65,8 @@ class BarcodeConfiguration(models.Model):
     price_display = fields.Boolean('Price')
     product_code = fields.Boolean('Product Default Code')
     barcode = fields.Boolean('Barcode Label')
+    description = fields.Boolean('Description')
+    quantity = fields.Boolean('Quantity')
 
     @api.onchange('dpi')
     def onchange_dpi(self):
