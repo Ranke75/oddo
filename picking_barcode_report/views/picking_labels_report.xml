@@ -27,6 +27,9 @@
                         <span t-esc="product.product_tmpl_id.description_sale"/>
                     </div>
 
+                    <div class="watermark" style="position:absolute;opacity:0.1;font-size:3em;height:100%;width:100%;text-align:center;z-index:1000;right:0px;border:0;top:110px">
+                        <img style="width:200px;height:100px;" t-att-src="'data:image/png;base64,'+ product.company_id.logo"/></div>
+
                     <!-- Product Quantity -->
                     <div t-if="data['form']['quantity']" align="center" style="color:black;font-size:15px;">
                         <span><b>Quantity</b></span>
