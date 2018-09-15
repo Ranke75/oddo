@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_barcode_labels">
+            <t t-foreach="doc_ids" t-as="doc">
+                <div class="page">
+                    <t t-set="product" t-value="request.env['product.product'].browse(doc.get('product_id'))"/>
+
+                    <!-- Company Logo -->
+                    <div class="row" style="background-color: #C4C4FD;">
+                        <div class="col-xs-4" >
+                            <img src="picking_barcode_report/static/src/img/Tellerex_logo.png" style="max-height: 100px;"/>
+                        </div>
+                        <div class="col-xs-8">
+                            <img src="picking_barcode_report/static/src/img/Tellerex_name.png" style="max-height: 100px;"/>
+                        </div>
+                    </div>
+
+                    <!-- Product PART No -->
+                    <div class="row" t-if="data['form']['product_code']" 
+                        style="color:black;font-size:22px;border-bottom: 2px solid black;">
+                        <div class="col-xs-12 mb16 mt16">
+                            <span><b>PART  NO: </b></span><span t-field="product.default_code"/>
+                        </div>
+                    </div>
+
+                    <!-- Product Description -->
+                    <div class="row" t-if="data['form']['description']" 
+                        style="color:black;font-size:22px;border-bottom: 2px solid black;">
+                        <div class="col-xs-12 mb16 mt16">
+                            <span><b>Description: </b></span><span t-esc="product.product_tmpl_id.description_sale"/>
+                        </div>
+                    </div>
+
+                    <div class="watermark" style="position:absolute;opacity:0.1;font-size:3em;height:100%;width:100%;text-align:center;z-index:1000;right:0px;border:0;top:250px">
+                        <img style="width:200px;height:100px;" t-att-src="'data:image/png;base64,'+ product.company_id.logo"/></div>
+
+                    <!-- Product Quantity -->
+                    <div class="row" t-if="data['form']['quantity']" 
+                        style="color:black;font-size:22px;border-bottom: 2px solid black;">
+                        <div class="col-xs-12 mb16 mt16">
+                            <span><b>Quantity: </b></span><span t-esc="doc.get('qty')"/>
+                        </div>
+                    </div>
+
+                    <!-- Product SERIAL No -->
+                    <div class="row" t-if="data['form']['lot']" 
+                        style="color:black;font-size:22px;border-bottom: 2px solid black;">
+                        <div class="col-xs-12 mb16 mt16">
+                            <span><b>SERIAL NO: </b></span><span t-esc="doc.get('lot_number')"/>
+                        </div>
+                    </div>
+
+                    <!-- Product Barcode -->
+                    <div class="row" t-if="data['form']['barcode']" align="center"
+                        style="color:black;font-size:22px;">
+                        <div class="col-xs-12 mb32 mt32">
+                            <span t-raw="get_barcode_string(product[0], data)" />
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>
