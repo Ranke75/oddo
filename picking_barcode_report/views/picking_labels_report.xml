@@ -16,11 +16,11 @@
                         </div>
                     </div>
 
-                    <!-- Product PART No -->
+                    <!-- Product Name -->
                     <div class="row" t-if="data['form']['product_code']" 
                         style="color:black;font-size:22px;border-bottom: 2px solid black;">
                         <div class="col-xs-12 mb16 mt16">
-                            <span><b>PART  NO: </b></span><span t-field="product.default_code"/>
+                            <span><b>PART NO: </b></span><span t-field="product.name"/>
                         </div>
                     </div>
 
@@ -28,7 +28,7 @@
                     <div class="row" t-if="data['form']['description']" 
                         style="color:black;font-size:22px;border-bottom: 2px solid black;">
                         <div class="col-xs-12 mb16 mt16">
-                            <span><b>Description: </b></span><span t-esc="product.product_tmpl_id.description_sale"/>
+                            <span><b>Description: </b></span><span t-esc="product.default_code"/>
                         </div>
                     </div>
 
