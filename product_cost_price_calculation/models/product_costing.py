@@ -23,6 +23,38 @@ class StockMove(models.Model):
         to_update_moves = self.filtered(lambda move: move.location_dest_id.usage == 'internal')
         to_update_moves._store_average_cost_price()
 
+    @api.multi
+    def action_done(self):
+        result = super(StockMove, self).action_done()
+        location_obj = self.env['stock.location']
+        parent_id = location_obj.search([('name', '=', 'ATL')])
+        stock_location_id = location_obj.search([('name', '=', 'Stock'), ('location_id', '=', parent_id.id)])
+        vendor_location_id = location_obj.search([('name', '=', 'Suppliers'), ('usage', '=', 'supplier')])
+        product = self.product_id[:1]
+        quants = self.env['stock.quant'].search([('product_id', '=', product.id),
+            ('location_id', '=', stock_location_id.id)])
+        if quants:
+            inv_qty = inv_value = value = purchase_qty = purchase_value = 0.0
+            for quant in quants:
+                inv_qty += quant.qty #On hand Qty
+                inv_value += quant.inventory_value #On hand inventory value
+                for history in quant.history_ids.filtered(lambda s: s.location_id == vendor_location_id 
+                    and s.location_dest_id == stock_location_id):
+                    if history.group_id and history.purchase_line_id:
+                        purchase_value += quant.qty * history.purchase_line_id.price_unit # inventory value base on purchase price unit
+            if product.tracking == 'none':
+                if purchase_value > 0 and inv_qty > 0:
+                    product.standard_price = float(purchase_value/inv_qty)
+                else:
+                    product.standard_price = 0.0
+            elif product.tracking == 'serial':
+                if purchase_value > 0 and inv_qty > 0:
+                    product.standard_price = float(purchase_value/inv_qty)
+                else:
+                    product.standard_price = 0.0
+        return result
+
+
 class Product(models.Model):
     _inherit = "product.product"
 
@@ -58,13 +90,13 @@ class Product(models.Model):
                             purchase_qty += quant.qty #Qty base on purchase
                             purchase_value += quant.qty * history.purchase_line_id.price_unit # inventory value base on purchase price unit
                 if record.tracking == 'none':
-                    if purchase_value > 0 and purchase_qty > 0:
+                    if purchase_value > 0 and inv_qty > 0:
                         record.standard_price = float(purchase_value/inv_qty)
                         # record.standard_price = float(purchase_value/purchase_qty)
                     else:
                         record.standard_price = 0.0
                 elif record.tracking == 'serial':
-                    if purchase_value > 0 and purchase_qty > 0:
+                    if purchase_value > 0 and inv_qty > 0:
                         record.standard_price = float(purchase_value/inv_qty)
                         # record.standard_price = value
                     else:
