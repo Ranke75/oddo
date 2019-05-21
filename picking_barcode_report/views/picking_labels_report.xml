@@ -16,7 +16,7 @@
                         </div>
                     </div>
 
-                    <!-- Product Name -->
+                    <!-- Product PART No -->
                     <div class="row" t-if="data['form']['product_code']" 
                         style="color:black;font-size:22px;border-bottom: 2px solid black;">
                         <div class="col-xs-12 mb16 mt16">
