@@ -15,7 +15,7 @@
                             <div class="row" t-if="data['form']['product_code']" 
                                 style="color:black;font-size:10px;border-bottom: 1px solid black;">
                                 <div class="mt4">
-                                    <span>PN: </span><b><span style="font-size:14px" t-field="product.default_code"/></b>
+                                    <span>PN: </span><b><span style="font-size:14px" t-field="product.name"/></b>
                                 </div>
                                 <div class="watermark" style="position:absolute;opacity:0.1;font-size:3em;height:80%;width:80%;text-align:center;z-index:1000;right:35px;border:0;top:4px">
                                     <img style="width:150px;height:75px;" src="picking_barcode_report/static/src/img/Tellerex_logo.png"/>
@@ -24,7 +24,7 @@
                             <div class="row" t-if="data['form']['description']" 
                                     style="color:black;font-size:10px;border-bottom: 1px solid black;">
                                 <div class="mt4">
-                                    <span>Desc: </span><span t-esc="product.product_tmpl_id.description_sale"/>
+                                    <span>Desc: </span><span t-esc="product.default_code"/>
                                 </div>
                             </div>
                             <div class="row" t-if="data['form']['quantity']" 
