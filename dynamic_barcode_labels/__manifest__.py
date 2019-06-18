@@ -3,7 +3,7 @@
 
 {
     'name': 'Print Dynamic Barcode Labels',
-    "version": "1.0",
+    "version": "12.0.1",
     'author': 'TidyWay',
     'category': 'product',
     'website': 'http://www.tidyway.in',
@@ -15,8 +15,8 @@
              'security/ir.model.access.csv',
              'wizard/barcode_labels.xml',
              'views/barcode_config_view.xml',
-             'views/barcode_labels_report.xml',
-             'views/barcode_labels.xml',
+             'report/barcode_labels_report.xml',
+             'report/barcode_labels.xml',
              'views/menu_view.xml'
              ],
     'price': 99,

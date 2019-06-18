@@ -58,7 +58,6 @@ class BarcodeConfiguration(models.Model):
        string="Display Width (px)",
        help="This width will required for display barcode in label.")
     humanreadable = fields.Boolean()
-
     product_name = fields.Boolean('Product Name')
     product_variant = fields.Boolean('Attributes')
     lot = fields.Boolean('Production Lot')

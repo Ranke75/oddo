@@ -21,14 +21,14 @@
 
 {
     'name' : 'Product Cost Price Calculation',
-    'version': '1.0',
+    'version': '12.0.2',
     'author': 'Geminate Consultancy Services',
     'license': 'Other proprietary',
     'description': """Product Cost Price Calculation:
 This module calculate a product cost on your purchase order and base on your 
 product tracking if inventory 
 
-if inventory No Tracking --> average, Serial --> real, Lot --> standard
+if inventory No Tracking --> Average Costing Method, Serial --> Realtime Costing Method, Lot --> Standard Costing Method
     """,
     'website': 'http://www.geminatecs.com',
     'depends' : ['stock_account'],

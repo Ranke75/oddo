@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<openerp>
+<odoo>
     <data>
 
         <act_window id="act_barcode_labels_picking" name="Picking Product Labels"
@@ -8,4 +8,4 @@
             view_type="form" />
 
     </data>
-</openerp>
+</odoo>

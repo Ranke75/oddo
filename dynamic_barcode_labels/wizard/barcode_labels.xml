@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <!-- Barcode Lables -->
-
         <record id="view_barcode_labels" model="ir.ui.view">
             <field name="name">Barcode Labels</field>
             <field name="model">barcode.labels</field>
@@ -25,7 +24,7 @@
                     <group>
                         <field name="barcode_type"/>
                     </group>
-                    <label string="More information about barcode configuration data, please navigate to inventory > barcode labels > barcode config menu." colspan="4"/>
+                    <span string="More information about barcode configuration data, please navigate to inventory > barcode labels > barcode config menu." colspan="4"/>
                     <footer>
                         <button name="print_report" string="Print"
                             type="object" class="oe_highlight" />
@@ -48,4 +47,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>

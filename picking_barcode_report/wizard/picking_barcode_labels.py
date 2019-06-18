@@ -30,20 +30,17 @@ class PickingBarcodeLabels(models.TransientModel):
         product_get_ids = []
         if self._context.get('active_model') == 'stock.picking':
             record_ids = self._context.get('active_ids', []) or []
-            picking_ids = self.env['stock.picking'].browse(record_ids)
-            for pack_operation in picking_ids.mapped('pack_operation_product_ids'):
-                if pack_operation.pack_lot_ids:
-                    for pack in pack_operation.pack_lot_ids:
-                        product_get_ids.append((0, 0, {
-                            'product_id': pack_operation.product_id.id,
-                            'lot_number': pack.lot_id.name,
-                            'qty': pack.qty
-                        }))
-                else:
-                    product_get_ids.append((0, 0, {
-                        'product_id': pack_operation.product_id.id,
-                        'qty': pack_operation.qty_done
-                    }))
+            picking_recs = self.env['stock.picking'].browse(record_ids)
+            product_get_ids = []
+            for picking in picking_recs:
+                for line in picking.move_lines:
+                    for line_n in picking.move_line_ids:
+                        if line_n.product_id == line.product_id:
+                            product_get_ids.append((0, 0, {
+                                'product_id': line.product_id.id,
+                                'lot_number': line_n.lot_id.name,
+                                'qty': line_n.qty_done
+                            }))
         view_id = self.env['ir.ui.view'].search([('name', '=', 'report_barcode_labels')])
         if not view_id.arch:
             raise Warning('Someone has deleted the reference '
@@ -51,7 +48,7 @@ class PickingBarcodeLabels(models.TransientModel):
         return {
                 'product_get_ids': product_get_ids,
                 'group_by_record': True,
-                'barcode_labels_qty': False
+                'barcode_labels_qty': False,
                 }
 
     group_by_record = fields.Boolean(string="Group By Barcode")
@@ -70,7 +67,7 @@ class PickingBarcodeLabels(models.TransientModel):
 
     @api.model
     def _create_paperformat(self, data):
-        report_action_id = self.env['ir.actions.report.xml'].search([('report_name', '=', 'picking_barcode_report.report_picking_barcode_labels')])
+        report_action_id = self.env['ir.actions.report'].search([('report_name', '=', 'picking_barcode_report.report_picking_barcode_labels')])
         if not report_action_id:
             raise Warning('Someone has deleted the reference view of report, Please Update the module!')
         config_rec = self.env['barcode.configuration'].search([], limit=1)
@@ -104,7 +101,7 @@ class PickingBarcodeLabels(models.TransientModel):
             'display_width': config_rec.display_width,
             'humanreadable': config_rec.humanreadable,
             'lot': config_rec.lot
-            })
+        })
         report_action_id.write({'paperformat_id': paperformat_id.id})
         return True
 
@@ -184,6 +181,5 @@ class PickingBarcodeLabels(models.TransientModel):
             except:
                 raise Warning('Select valid barcode type according barcode field value or check value in field!')
         self._create_paperformat(datas['form'])
-        return self.env['report'].get_action([], 'picking_barcode_report.report_picking_barcode_labels', data=datas)
-
+        return self.env.ref('picking_barcode_report.pickingbarcodelabels').report_action([], data=datas)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

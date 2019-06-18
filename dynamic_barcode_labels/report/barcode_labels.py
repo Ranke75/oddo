@@ -1,42 +1,63 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2015-Present TidyWay Software Solution. (<https://tidyway.in/>)
 
+import base64
+import time
 from odoo import models, api, _
 from reportlab.graphics import barcode
 from base64 import b64encode
+from reportlab.graphics.barcode import createBarcodeDrawing
 
 
 class ReportBarcodeLabels(models.AbstractModel):
     _name = 'report.dynamic_barcode_labels.report_barcode_labels'
 
-    @api.multi
-    def render_html(self, docids, data=None):
-        report_obj = self.env['report']
-        report = report_obj._get_report_from_name(
-              'picking_barcode_report.report_picking_barcode_labels')
-        docargs = {
-            'doc_ids': data['product_ids'],
-            'doc_model': report.model,
-            'docs': docids,
-            'get_barcode_string': self._get_barcode_string,
-            'data': data
-            }
-        return report_obj.render(
-             'picking_barcode_report.report_picking_barcode_labels', docargs)
-
     @api.model
-    def _get_barcode_string(self, product, data):
-        barcode_value = product[str(data['form']['barcode_field'])]
-        barcode_str = barcode.createBarcodeDrawing(
-                            data['form']['barcode_type'],
-                            value=barcode_value,
-                            format='png',
-                            width=int(data['form']['barcode_height']),
-                            height=int(data['form']['barcode_width']),
-                            humanReadable=data['form']['humanreadable']
-                            )
-        encoded_string = b64encode(barcode_str.asString('png'))
-        barcode_str = "<img style='width:" + str(data['form']['display_width']) + "px;height:" + str(data['form']['display_height']) + "px'src='data:image/png;base64,{0}'>".format(encoded_string)
-        return barcode_str or ''
+    def _get_report_values(self, docids, data=None):
+        if not data.get('form'):
+            raise UserError(_("Form content is missing, this report cannot be printed."))
+        product_obj = self.env["product.product"]
+        record_ids = []
+        for rec in data['form']['product_ids']:
+            for loop in range(0, int(rec['qty'])):
+                record_ids.append((
+                       product_obj.browse(int(rec['product_id'])),
+                       rec['lot_number']
+                       ))
+        return {
+            'doc_ids': data['form']['product_ids'],
+            'doc_model': 'product.product',
+            'data': data,
+            'docs': record_ids,
+            'get_barcode_value': self.get_barcode_value,
+            'is_humanreadable': self.is_humanreadable,
+            'barcode': self.barcode,
+            'time': time,
+        }
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+    def is_humanreadable(self, data):
+        return data['form']['humanreadable'] and 1 or 0
+
+    def get_barcode_value(self, product, data):
+        barcode_value = product[str(data['form']['barcode_field'])]
+        return barcode_value
+
+
+    def barcode(self, type, value, width, height, humanreadable, product):
+        barcode_obj = createBarcodeDrawing(
+            type, value=value, format='png', width=width, height=height,
+            humanReadable = humanreadable
+        )
+        attachment = self.env['ir.attachment'].search([('res_id','=', product.id)], limit=1)
+        if not attachment:
+            attachment_id = self.env['ir.attachment'].create({
+                        'name': product.name,
+                        'res_model': 'product.product',
+                        'res_id': product.id or False,
+                        'datas_fname': str(product.name) + '_' + 'attachment'
+                    })
+        else:
+            attachment_id = attachment
+        file_data = base64.encodestring(barcode_obj.asString('png'))
+        attachment_id.update({'datas':file_data})
+        return attachment_id

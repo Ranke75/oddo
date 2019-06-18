@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <record id="view_picking_barcode_labels" model="ir.ui.view">
@@ -23,7 +23,7 @@
                     <group>
                         <field name="barcode_type"/>
                     </group>
-                    <label string="More information about barcode configuration data, please navigate to inventory > barcode labels > barcode config menu." colspan="4"/>
+                    <span string="More information about barcode configuration data, please navigate to inventory > barcode labels > barcode config menu." colspan="4"/>
                     <footer>
                         <button name="print_picking_barcode" string="Print" type="object" class="oe_highlight" />
                         or
@@ -44,4 +44,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>

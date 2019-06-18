@@ -72,7 +72,7 @@ class BarcodeLabels(models.TransientModel):
 
     @api.model
     def _create_paper_format(self, data):
-        report_action_id = self.env['ir.actions.report.xml'].search([('report_name', '=', 'dynamic_barcode_labels.report_barcode_labels')])
+        report_action_id = self.env['ir.actions.report'].search([('report_name', '=', 'dynamic_barcode_labels.report_barcode_labels')])
         if not report_action_id:
             raise Warning('Someone has deleted the reference view of report, Please Update the module!')
         config_rec = self.env['barcode.configuration'].search([], limit=1)
@@ -90,23 +90,23 @@ class BarcodeLabels(models.TransientModel):
         orientation = 'Portrait'
         self._cr.execute(""" DELETE FROM report_paperformat WHERE custom_report=TRUE""")
         paperformat_id = self.env['report.paperformat'].create({
-                'name': 'Custom Report',
-                'format': 'custom',
-                'page_height': page_height,
-                'page_width': page_width,
-                'dpi': dpi,
-                'custom_report': True,
-                'margin_top': margin_top,
-                'margin_bottom': margin_bottom,
-                'margin_left': margin_left,
-                'margin_right': margin_right,
-                'header_spacing': header_spacing,
-                'orientation': orientation,
-                'display_height': config_rec.display_height,
-                'display_width': config_rec.display_width,
-                'humanreadable': config_rec.humanreadable,
-                'lot': config_rec.lot
-                })
+            'name': 'Custom Report',
+            'format': 'custom',
+            'page_height': page_height,
+            'page_width': page_width,
+            'dpi': dpi,
+            'custom_report': True,
+            'margin_top': margin_top,
+            'margin_bottom': margin_bottom,
+            'margin_left': margin_left,
+            'margin_right': margin_right,
+            'header_spacing': header_spacing,
+            'orientation': orientation,
+            # 'display_height': config_rec.display_height,
+            # 'display_width': config_rec.display_width,
+            # 'humanreadable': config_rec.humanreadable,
+            # 'lot': config_rec.lot
+        })
         report_action_id.write({'paperformat_id': paperformat_id.id})
         return True
 
@@ -123,34 +123,34 @@ class BarcodeLabels(models.TransientModel):
             raise Warning(_(" Please configure barcode data from "
                             "configuration menu"))
         datas = {
-                 'ids': [x.product_id.id for x in self.product_get_ids],
-                 'form': {
-                    'label_width': config_rec.label_width or 50,
-                    'label_height': config_rec.label_height or 50,
-                    'margin_top': config_rec.margin_top or 1,
-                    'margin_bottom': config_rec.margin_bottom or 1,
-                    'margin_left': config_rec.margin_left or 1,
-                    'margin_right': config_rec.margin_right or 1,
-                    'dpi': config_rec.dpi or 90,
-                    'header_spacing': config_rec.header_spacing or 1,
-                    'barcode_height': config_rec.barcode_height or 300,
-                    'barcode_width': config_rec.barcode_width or 1500,
-                    'barcode_type': self.barcode_type or 'EAN13',
-                    'barcode_field': config_rec.barcode_field or '',
-                    'display_width': config_rec.display_width,
-                    'display_height': config_rec.display_height,
-                    'humanreadable': config_rec.humanreadable,
-                    'product_name': config_rec.product_name,
-                    'product_variant': config_rec.product_variant,
-                    'price_display': config_rec.price_display,
-                    'lot': config_rec.lot,
-                    'description': config_rec.description,
-                    'quantity': config_rec.quantity,
-                    'product_code': config_rec.product_code or '',
-                    'barcode': config_rec.barcode,
-                    'currency_position': config_rec.currency_position or 'after',
-                    'currency': config_rec.currency and config_rec.currency.id or '',
-                    'symbol': config_rec.currency and config_rec.currency.symbol or '',
+            'ids': [x.product_id.id for x in self.product_get_ids],
+            'form': {
+                'label_width': config_rec.label_width or 50,
+                'label_height': config_rec.label_height or 50,
+                'margin_top': config_rec.margin_top or 1,
+                'margin_bottom': config_rec.margin_bottom or 1,
+                'margin_left': config_rec.margin_left or 1,
+                'margin_right': config_rec.margin_right or 1,
+                'dpi': config_rec.dpi or 90,
+                'header_spacing': config_rec.header_spacing or 1,
+                'barcode_height': config_rec.barcode_height or 300,
+                'barcode_width': config_rec.barcode_width or 1500,
+                'barcode_type': self.barcode_type or 'EAN13',
+                'barcode_field': config_rec.barcode_field or '',
+                'display_width': config_rec.display_width,
+                'display_height': config_rec.display_height,
+                'humanreadable': config_rec.humanreadable,
+                'product_name': config_rec.product_name,
+                'product_variant': config_rec.product_variant,
+                'price_display': config_rec.price_display,
+                'lot': config_rec.lot,
+                'description': config_rec.description,
+                'quantity': config_rec.quantity,
+                'product_code': config_rec.product_code or '',
+                'barcode': config_rec.barcode,
+                'currency_position': config_rec.currency_position or 'after',
+                'currency': config_rec.currency and config_rec.currency.id or '',
+                'symbol': config_rec.currency and config_rec.currency.symbol or '',
                 }
             }
         product_ids = []
@@ -168,7 +168,7 @@ class BarcodeLabels(models.TransientModel):
                         'lot_number': line.lot_number or '',
                         'qty': line.qty if self.barcode_labels_qty else 1.0,
                         })
-        datas.update({'product_ids': product_ids})
+        datas['form'].update({'product_ids': product_ids})
         browse_pro = self.env['product.product'].browse([x.product_id.id for x in self.product_get_ids])
         for product in browse_pro:
             barcode_value = product[config_rec.barcode_field]
@@ -187,6 +187,5 @@ class BarcodeLabels(models.TransientModel):
                 raise Warning('Select valid barcode type according barcode field value or check value in field!')
 
         self._create_paper_format(datas['form'])
-        return self.env['report'].get_action([], 'dynamic_barcode_labels.report_barcode_labels', data=datas)
-
+        return self.env.ref('dynamic_barcode_labels.barcodelabels').report_action([], data=datas)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
