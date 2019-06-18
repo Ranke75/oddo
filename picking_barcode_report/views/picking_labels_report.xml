@@ -25,10 +25,9 @@
                                         <div class="mt4">
                                             <span>PN: </span><b><span style="font-size:14px" t-field="product.name"/></b>
                                         </div>
-
                                         <!-- Watermark on Label -->
-                                        <div class="watermark" style="position:absolute;opacity:0.1;font-size:3em;height:100%;width:100%;text-align:center;z-index:1000;right:-10px;left:40px;border:0;top:4px">
-                                            <img style="width:150px;height:80px;" t-att-src="'data:image/png;base64,%s' % to_text(product.company_id.logo)"/>
+                                        <div class="watermark" style="position:absolute;opacity:0.1;font-size:3em;height:80%;width:80%;text-align:center;z-index:1000;right:-10px;left:67px;border:0;top:4px">
+                                            <img style="width:110px;height:75px;" t-att-src="'data:image/png;base64,%s' % to_text(product.company_id.logo)"/>
                                         </div>
                                     </div>
 
