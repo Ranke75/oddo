@@ -6,6 +6,7 @@ import dateutil.relativedelta
 
 class ProductTemplate(models.Model):
     _name = 'product.template'
+    _description = "Product Template"
     _inherit = 'product.template'
 
     @api.one
@@ -19,7 +20,7 @@ class ProductTemplate(models.Model):
 
 class StockMove(models.Model):
     _inherit = "stock.move"
-
+    
     @api.multi
     def _action_done(self):
         result = super(StockMove, self)._action_done()

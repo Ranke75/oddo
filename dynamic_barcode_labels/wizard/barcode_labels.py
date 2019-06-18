@@ -12,6 +12,7 @@ from reportlab.graphics import barcode
 
 class BarcodeProductLines(models.TransientModel):
     _name = "barcode.product.lines"
+    _description  = "Barcode Product Lines"
 
     product_id = fields.Many2one(
          'product.product',

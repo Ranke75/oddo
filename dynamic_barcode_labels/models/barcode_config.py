@@ -6,6 +6,7 @@ from odoo import models, api, fields
 
 class BarcodeConfiguration(models.Model):
     _name = 'barcode.configuration'
+    _description = "Barcode Configuration"
 
     @api.model
     def _get_barcode_field(self):

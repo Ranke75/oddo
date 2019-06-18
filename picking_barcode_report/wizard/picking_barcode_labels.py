@@ -6,6 +6,7 @@ from reportlab.graphics import barcode
 
 class PickingBarcodeProductLines(models.TransientModel):
     _name = "picking.barcode.product.lines"
+    _description  = "Picking Barcode Product Lines"
 
     product_id = fields.Many2one(
         'product.product',
