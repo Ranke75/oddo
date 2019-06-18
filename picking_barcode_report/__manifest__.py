@@ -20,7 +20,7 @@
 ##############################################################################
 {
 	'name': 'Print Picking Barcode Labels',
-	"version": "12.0.2",
+	"version": "12.0.3",
 	'author': 'Geminate Consultancy Services',
 	'category': 'stock',
 	'website': 'https://www.geminatecs.com',

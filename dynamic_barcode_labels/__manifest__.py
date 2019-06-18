@@ -3,7 +3,7 @@
 
 {
     'name': 'Print Dynamic Barcode Labels',
-    "version": "12.0.1",
+    "version": "12.0.2",
     'author': 'TidyWay',
     'category': 'product',
     'website': 'http://www.tidyway.in',
