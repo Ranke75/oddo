@@ -24,7 +24,7 @@
     'version': '12.0.3',
     'author': 'Geminate Consultancy Services',
     'license': 'Other proprietary',
-    'description': """Product Cost Price Calculation:
+    'description': """Product Cost Price Calculation
 This module calculate a product cost on your purchase order and base on your 
 product tracking if inventory 
 
