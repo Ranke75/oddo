@@ -79,13 +79,13 @@ class Product(models.Model):
                         purchase_value += move.purchase_line_id.product_qty * move.purchase_line_id.price_unit
                 if record.tracking == 'none':
                     if purchase_value > 0 and inv_qty > 0:
-                        record.standard_price = float(purchase_value/inv_qty)
-                        # record.standard_price = float(purchase_value/purchase_qty)
+                        #record.standard_price = float(purchase_value/inv_qty)
+                        record.standard_price = float(purchase_value/purchase_qty)
                     else:
                         record.standard_price = 0.0
                 elif record.tracking == 'serial':
                     if purchase_value > 0 and inv_qty > 0:
-                        record.standard_price = float(purchase_value/inv_qty)
+                        record.standard_price = float(purchase_value/purchase_qty)
                     else:
                         record.standard_price = 0.0
             else:
