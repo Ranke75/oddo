@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="wizard_note_update_data" model="ir.ui.view">
+            <field name="name">ticl.note.data.form</field>
+            <field name="model">ticl.note.data</field>
+            <field name="arch" type="xml">
+                <form string="Import Product" > 
+
+
+                    
+                              <field name="file_name" invisible="0"/>
+                              <field name="inventory_summary_file" readonly="1"  filename="file_name"/>
+                          
+        
+                    <footer>
+                        <button string="Update Data" name="action_print_note" type="object" 
+                            class="btn-primary"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                    </form>
+                </field>
+        </record>
+
+        <record id="action_import_update" model="ir.actions.act_window">
+            <field name="name">Customer Note Data</field>
+            <field name="res_model">ticl.note.data</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_note_update_data" />
+            <field name="target">new</field>
+        </record>
+
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_import_update" action="action_import_update"
+            name="Update Data" sequence="3"/>
+
+
+    </data>
+</odoo>
