@@ -82,7 +82,7 @@ class ticl_note_data(models.TransientModel):
             heading =  'Inbound/Received Inventory Report'
             worksheet.write_merge(0, 0, 0, 12, heading, easyxf('font:height 210; align: horiz center;pattern: pattern solid, fore_color yellow; font: color black; font:bold True;' "borders: top thin,bottom thin"))
             
-            inventory_objs = self.env['account.move'].search([('type','=','out_invoice')])
+            inventory_objs = self.env['account.invoice'].search([('type','=','out_invoice')])
             print("----inventory_objs----",inventory_objs)               
             for inventory in inventory_objs:
 
