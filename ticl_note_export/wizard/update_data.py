@@ -87,7 +87,7 @@ class ticl_note_data(models.TransientModel):
             for inventory in inventory_objs:
 
                 worksheet.write(row, 0, inventory.name or '')
-                worksheet.write(row, 1, inventory.narration or '')
+                worksheet.write(row, 1, inventory.comment or '')
                 # worksheet.write(row, 2, inventory.serial_number or '')
                 # worksheet.write(row, 3, inventory.count_number or ' ')
                 # worksheet.write(row, 4, inventory.ticl_order_id.states or '')
