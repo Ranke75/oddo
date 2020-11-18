@@ -10,11 +10,10 @@
 	'depends': ['base', 'account'],	
 	'data': [
 		'security/ir.model.access.csv',
-		'wizard/import_work_order_view.xml',
+		'wizard/import_work_order_view.xml'
 		],
 
 	'installable': True,
-	#'live_test_url'	:'https://youtu.be/ONRtviwfs1s',
     'application': True,
     'qweb': [
     		],
